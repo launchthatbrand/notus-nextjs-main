@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
+import { useDispatch, useSelector, connect } from "react-redux";
+import firebase, { auth } from "../firebase";
+import { toast } from "react-toastify";
+import store from "../src/app/store";
+import { Provider } from "react-redux";
 
 import PageChange from "components/PageChange/PageChange.js";
 
@@ -26,8 +31,24 @@ Router.events.on("routeChangeError", () => {
   document.body.classList.remove("body-page-transition");
 });
 
-export default class MyApp extends App {
+class MyApp extends App {
   componentDidMount() {
+    toast("Login Successful");
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        dispatch(
+          login({
+            email: authUser.email,
+            uid: authUser.uid,
+            displayName: authUser.displayName,
+            photoUrl: authUser.photoURL,
+          })
+        );
+      } else {
+        dispatch(logout());
+      }
+    });
+
     let comment = document.createComment(`
 
 =========================================================
@@ -65,19 +86,22 @@ export default class MyApp extends App {
     const Layout = Component.layout || (({ children }) => <>{children}</>);
 
     return (
-      <React.Fragment>
-        <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-          <title>Notus NextJS by Creative Tim</title>
-          <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </React.Fragment>
+      <Provider store={store}>
+        <React.Fragment>
+          <Head>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            />
+            <title>Notus NextJS by Creative Tim</title>
+            <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+          </Head>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </React.Fragment>
+      </Provider>
     );
   }
 }
+module.exports = MyApp;
