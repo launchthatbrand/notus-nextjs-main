@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
-import { useDispatch, useSelector, connect } from "react-redux";
 import firebase, { auth } from "../firebase";
 import { toast } from "react-toastify";
+import {login, logout} from "../src/features/userSlice"
 import store from "../src/app/store";
-import { Provider } from "react-redux";
+import { Provider, useDispatch, useSelector, connect  } from "react-redux";
 
 import PageChange from "components/PageChange/PageChange.js";
 
@@ -32,11 +32,12 @@ Router.events.on("routeChangeError", () => {
 });
 
 class MyApp extends App {
+  
   componentDidMount() {
-    toast("Login Successful");
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        dispatch(
+        console.log("User Signed IN ");
+        store.dispatch(
           login({
             email: authUser.email,
             uid: authUser.uid,
@@ -45,7 +46,8 @@ class MyApp extends App {
           })
         );
       } else {
-        dispatch(logout());
+        console.log("User Signed OUT ");
+        store.dispatch(logout());
       }
     });
 
@@ -104,4 +106,4 @@ class MyApp extends App {
     );
   }
 }
-module.exports = MyApp;
+export default MyApp
