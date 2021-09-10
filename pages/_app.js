@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
+import { useRouter } from "next/router";
 import firebase, { auth } from "../firebase";
 import { toast } from "react-toastify";
 import {login, logout} from "../src/features/userSlice"
@@ -32,6 +33,8 @@ Router.events.on("routeChangeError", () => {
 });
 
 class MyApp extends App {
+
+  
   
   componentDidMount() {
     auth.onAuthStateChanged((authUser) => {
@@ -48,6 +51,7 @@ class MyApp extends App {
       } else {
         console.log("User Signed OUT ");
         store.dispatch(logout());
+        Router.push("/");
       }
     });
 
@@ -86,6 +90,24 @@ class MyApp extends App {
     const { Component, pageProps } = this.props;
 
     const Layout = Component.layout || (({ children }) => <>{children}</>);
+
+
+    // auth.onAuthStateChanged((authUser) => {
+    //   if (authUser) {
+    //     console.log("User Signed IN ");
+    //     store.dispatch(
+    //       login({
+    //         email: authUser.email,
+    //         uid: authUser.uid,
+    //         displayName: authUser.displayName,
+    //         photoUrl: authUser.photoURL,
+    //       })
+    //     );
+    //   } else {
+    //     console.log("User Signed OUT ");
+    //     store.dispatch(logout());
+    //   }
+    // });
 
     return (
       <Provider store={store}>

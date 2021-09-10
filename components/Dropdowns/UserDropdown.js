@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { createPopper } from "@popperjs/core";
-import { useRouter } from "next/router";
+import { auth } from "../../firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectUser } from "src/features/userSlice";
 
 const UserDropdown = () => {
   // dropdown props
@@ -16,6 +18,16 @@ const UserDropdown = () => {
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
+
+  const dispatch = useDispatch();
+
+  const user = useSelector(selectUser);
+
+  const logoutOfApp = () => {
+    dispatch(logout());
+    auth.signOut();
+  };
+
   return (
     <>
       <a
@@ -32,7 +44,7 @@ const UserDropdown = () => {
             <img
               alt="..."
               className="w-full rounded-full align-middle border-none shadow-lg"
-              src="/img/team-1-800x800.jpg"
+              src={user?.photoUrl}
             />
           </span>
         </div>
@@ -51,7 +63,7 @@ const UserDropdown = () => {
           }
           onClick={(e) => e.preventDefault()}
         >
-          Action
+          {user?.email}
         </a>
         <a
           href="#pablo"
@@ -67,7 +79,7 @@ const UserDropdown = () => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           }
-          onClick={(e) => e.preventDefault()}
+          onClick={logoutOfApp}
         >
           Logout
         </a>

@@ -10,14 +10,27 @@ import { toast } from "react-toastify";
 
 import Auth from "layouts/Auth.js";
 
-const uiConfig = {
-  signInSuccessUrl: "/",
-  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-};
+// const uiConfig = {
+//   signInSuccessUrl: "/",
+//   signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+// };
 
 export default function Login() {
+  const [name, setname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged((authUser) => {
+  //     console.log(authUser);
+  //     if (authUser) {
+  //       router.push("/admin/dashboard");
+  //       toast("Login Successful");
+  //     }
+  //   });
+
+  //   return unsubscribe;
+  // }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
